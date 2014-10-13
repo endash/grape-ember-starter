@@ -1,85 +1,23 @@
-Grape API on Rack
-=================
+Grape Ember Starter
+===================
 
-[![Build Status](https://secure.travis-ci.org/dblock/grape-on-rack.png)](http://travis-ci.org/dblock/grape-on-rack)
+This is intended to be a super light-weight drop-in data harness for quickly getting ember apps up to speed with something more complex than mocks or fixtures.
 
-A [Grape](http://github.com/intridea/grape) API mounted on Rack.
+Based off of @dblock's [Grape-on-Rack](https://github.com/dblock/grape-on-rack). Many props to that project.
 
-* [ping](api/ping.rb): a hello world example that returns a JSON document
-* [post_put](api/post_put.rb): a simple `POST` and `PUT` example
-* [post_json](api/post_json.rb): an example that shows a `POST` of JSON data
-* [rescue_from](api/rescue_from.rb): an example of `rescue_from` that wraps all exceptions in an HTTP error code 500
-* [path_versioning](api/path_versioning.rb): an example that uses path-based versioning
-* [header_versioning](api/header_versioning.rb): an example that uses vendor header-based versioning
-* [wrap_response](api/wrap_response.rb): a middleware that wraps all responses and always returns HTTP code 200
-* [content_type](api/content_type.rb): an example that overrides the default `Content-Type` or returns data in both JSON and XML formats
-* [upload_file](api/upload_file.rb): an example that demonstrates a file upload and download
-* [entites](api/entities.rb): an example of using [grape-entity](https://github.com/intridea/grape-entity)
+Standard warnings apply: not production ready, etc, etc. 
 
-See
----
+The eventual intended stack is:
 
-There's a deployed [grape-on-rack on Heroku](http://grape-on-rack.herokuapp.com/).
+* [Rack](https://github.com/rack/rack)
+* [Grape](https://github.com/intridea/grape), a framework for rapid creation of APIs
+* [ActiveRecord](https://github.com/rails/rails/tree/master/activerecord), for the ORM and database related rake tasks
+* [ActiveModelSerializers](https://github.com/rails-api/active_model_serializers), which natively supports the format expected by Ember Data
+* [Omniath](https://github.com/intridea/omniauth), for third party authentication support
 
-Run
----
+This project is intended for Ruby-Ember devs who want:
 
-```
-$ bundle install
-$ rackup
+* a drop-in back-end for development and test purposes, that is more complex than a fixtures environment but not as complex or demanding as a full back-end app.
+* a turnkey backend for non-critical hobby or internal projects. Use at your own risk.
+* a Ruby-based development environment that can be supplanted by or integrated into a full back-end app when project conditions warrent.
 
-Loading NewRelic in developer mode ...
-[2013-06-20 08:57:58] INFO  WEBrick 1.3.1
-[2013-06-20 08:57:58] INFO  ruby 1.9.3 (2013-02-06) [x86_64-darwin11.4.2]
-[2013-06-20 08:57:58] INFO  WEBrick::HTTPServer#start: pid=247 port=9292
-```
-
-### Hello World
-
-Navigate to http://localhost:9292/api/ping with a browser or use `curl`.
-
-```
-$ curl http://localhost:9292/api/ping
-
-{"ping":"pong"}
-```
-
-### Get Plain Text
-
-```
-$ curl http://localhost:9292/api/data
-
-A red brown fox jumped over the road.
-```
-
-### Upload a File
-
-```
-$ curl -X POST -i -F image_file=@spec/fixtures/grape_logo.png http://localhost:9292/api/avatar
-
-{"filename":"grape_logo.png","size":4272}
-```
-
-### Upload and Download a File
-
-```
-$ curl -X POST -i -F file=@spec/fixtures/grape_logo.png http://localhost:9292/api/download.png
-$ curl -X POST -i -F file=@api/ping.rb http://localhost:9292/api/download.rb
-```
-
-List Routes
------------
-
-```
-rake routes
-```
-
-Explore the API
----------------
-
-Explore the API using [Swagger UI](http://petstore.swagger.wordnik.com). Run the application and point the explorer to `http://localhost:9292/api/swagger_doc` or `http://grape-on-rack.herokuapp.com/api/swagger_doc`.
-
-New Relic
----------
-
-The application is setup with NewRelic w/ Developer Mode. Navigate to http://localhost:9292/newrelic after making some API calls.

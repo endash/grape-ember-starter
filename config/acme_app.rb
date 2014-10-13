@@ -11,13 +11,6 @@ module Acme
 
     def self.instance
       @instance ||= Rack::Builder.new do
-        use Rack::Cors do
-          allow do
-            origins '*'
-            resource '*', headers: :any, methods: :get
-          end
-        end
-
         run Acme::App.new
       end.to_app
     end
@@ -25,6 +18,8 @@ module Acme
     def call(env)
       # api
       response = Acme::API.call(env)
+
+      ActiveRecord::Base.clear_active_connections!
 
       # Check if the App wants us to pass the response along to others
       if response[1]['X-Cascade'] == 'pass'

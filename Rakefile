@@ -1,5 +1,25 @@
 require 'rubygems'
 require 'bundler'
+require 'active_record'
+
+include ActiveRecord::Tasks
+
+class Seeder
+  def initialize(seed_file)
+    @seed_file = seed_file
+  end
+
+  def load_seed
+    raise "Seed file '#{@seed_file}' does not exist" unless File.file?(@seed_file)
+    load @seed_file
+  end
+end
+
+DatabaseTasks.env = ENV['ENV'] || :development
+DatabaseTasks.db_dir = 'db'
+DatabaseTasks.migrations_paths = File.join('./db', 'migrate')
+DatabaseTasks.seed_loader = Seeder.new File.join('./db', 'seeds.rb')
+DatabaseTasks.database_configuration = YAML::load(File.open('./config/database.yml'))
 
 begin
   Bundler.setup(:default, :development)
@@ -21,7 +41,7 @@ end
 
 task :environment do
   ENV['RACK_ENV'] ||= 'development'
-  require File.expand_path('../config/environment', __FILE__)
+  require File.expand_path('../config/environment', __FILE__)  
 end
 
 task routes: :environment do
@@ -30,7 +50,6 @@ task routes: :environment do
   end
 end
 
-require 'rubocop/rake_task'
-RuboCop::RakeTask.new(:rubocop)
+task default: [:spec]
 
-task default: [:rubocop, :spec]
+load 'active_record/railties/databases.rake'
