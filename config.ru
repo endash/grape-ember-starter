@@ -1,5 +1,5 @@
 require File.expand_path('../config/environment', __FILE__)
 
-run Acme::Application.new
+run Application.new
 
 

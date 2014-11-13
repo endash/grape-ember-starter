@@ -14,16 +14,14 @@ require 'endpoints'
 require 'models'
 require 'serializers'
 
-module Acme
-  Endpoints.constants.map { |c| Acme::Endpoints.const_get(c) }.select { |c| c < Grape::API }.each do |c|
-    API.mount c
-  end
+Endpoints.constants.map { |c| Endpoints.const_get(c) }.select { |c| c < Grape::API }.each do |c|
+  API.mount c
+end
 
-  class Application
-    def call(env)
-      API.call(env).tap do
-        ActiveRecord::Base.clear_active_connections!
-      end
+class Application
+  def call(env)
+    API.call(env).tap do
+      ActiveRecord::Base.clear_active_connections!
     end
   end
 end
